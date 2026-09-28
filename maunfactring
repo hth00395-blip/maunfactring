@@ -1,0 +1,97 @@
+equired_specs = ["high durability", "high heat resistance"]
+required_quantity = 5
+
+materials = [
+    {
+        "name": "Local Polymer A",
+        "specifications": ["high durability", "high heat resistance"],
+        "quantity": 6,
+        "supplier": "Nile Industrial Materials",
+        "location": "Beni Suef"
+    },
+    {
+        "name": "Local Polymer B",
+        "specifications": ["good durability", "heat resistance"],
+        "quantity": 5,
+        "supplier": "Delta Materials",
+        "location": "Cairo"
+    }
+]
+
+
+recommendations = []
+
+for material in materials:
+
+    matched_specs = 0
+
+    for required in required_specs:
+        for available in material["specifications"]:
+
+            if required in available or available in required:
+                matched_specs += 1
+                break
+
+    specification_score = (
+        matched_specs / len(required_specs)
+    ) * 100
+
+    if material["quantity"] >= required_quantity:
+        quantity_score = 100
+    else:
+        quantity_score = (
+            material["quantity"] / required_quantity
+        ) * 100
+
+    final_score = (
+        specification_score * 0.7
+        + quantity_score * 0.3
+    )
+
+    recommendations.append({
+        "name": material["name"],
+        "score": round(final_score, 2),
+        "supplier": material["supplier"],
+        "location": material["location"],
+        "quantity": material["quantity"]
+    }
+
+    )
+
+recommendations.sort(
+    key=lambda x: x["score"],
+    reverse=True
+)
+
+
+print("RECOMMENDATION SYSTEM")
+
+
+print("\nFactory Requirements:")
+print("Required Quantity:", required_quantity, "Tons / Month")
+print("Required Specifications:")
+
+for spec in required_specs:
+    print("-", spec)
+
+
+print("\nRecommended Materials:")
+
+for i, material in enumerate(recommendations, 1):
+
+    print("\nAlternative", i)
+    print("Material:", material["name"])
+    print("Match Score:", material["score"], "%")
+    print("Available Quantity:", material["quantity"], "Tons / Month")
+    print("Supplier:", material["supplier"])
+    print("Location:", material["location"])
+
+
+best_material = recommendations[0]
+
+print("FINAL RECOMMENDATION")
+
+print("Material:", best_material["name"])
+print("Match Score:", best_material["score"], "%")
+print("Supplier:", best_material["supplier"])
+print("Location:", best_material["location"])
